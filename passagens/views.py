@@ -1,5 +1,8 @@
-from django.http import HttpResponse
 from django.shortcuts import render
 
+from passagens.forms import PassagemForm
+
 def index(request):
-    return render(request, 'index.html')
+    form = PassagemForm()
+    contexto = {'form': form,}
+    return render(request, 'index.html', contexto)
