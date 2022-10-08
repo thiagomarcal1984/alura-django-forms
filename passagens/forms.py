@@ -4,20 +4,25 @@ from datetime import datetime
 from passagens.classe_viagem import tipos_de_classes
 from .validation import * # Importa todas as funções e classes do pacote validation.
 
-class PassagemForm(forms.Form):
-    origem = forms.CharField(label='Origem', max_length=100)
-    destino = forms.CharField(label='Destino', max_length=100)
-    data_ida = forms.DateField(label='Ida', widget=DatePicker())
-    data_volta = forms.DateField(label='Volta', widget=DatePicker())
+from .models import Passagem, ClasseViagem, Pessoa
+
+class PassagemForm(forms.ModelForm):
     data_pesquisa = forms.DateField(label='Data da pesquisa', disabled=True, initial=datetime.today)
-    classe_viagem = forms.ChoiceField(label='Classe do voo', choices=tipos_de_classes)
-    informacoes = forms.CharField(
-        label='Informações extras',
-        max_length=200,
-        widget=forms.Textarea(),
-        required=False
-    )
-    email = forms.EmailField(label='Email', max_length=150)
+    class Meta:
+        model = Passagem
+        fields = '__all__'
+        labels = {
+            'data_ida' : "Data de ida",
+            'data_volta' : "Data de volta",
+            'data_pesquisa' : "Data da pesequisa",
+            'informacoes' : "Informações",
+            'classe_viagem' : "Classe do voo",
+        }
+        widgets = {
+            'informacoes': forms.Textarea(),
+            'data_ida' : DatePicker(),
+            'data_volta' : DatePicker(),
+        }
 
     # O método clean faz a validação em conjunto;
     # Já os métodos clean_[campo] validam cada campo individualmente.
