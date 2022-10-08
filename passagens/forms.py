@@ -17,3 +17,12 @@ class PassagemForm(forms.Form):
         required=False
     )
     email = forms.EmailField(label='Email', max_length=150)
+
+    def clean_origem(self): # Os métodos clean_[campo] devem referenciar o próprio formulário.
+        # 2 sintaxes: cleaned_data['campo'] e cleaned_data.get('campo').
+        # A segunda sintaxe não dá erro de chave de acesso.
+        origem = self.cleaned_data.get('origem')
+        if any(char.isdigit() for char in origem):
+            raise forms.ValidationError('Origem inválida: Não inclua números.')
+        else:
+            return origem
