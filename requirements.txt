@@ -1,2 +1,3 @@
 django==3.2
 django-tempus-dominus==5.1.2.13
+django-widget-tweaks==1.4.5

@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'widget_tweaks', # Instalação do app django-widget-tweaks
     'tempus_dominus', # Instalação do app django-tempus-dominus
     'passagens', # Instalação do app passagens
     'django.contrib.admin',
