@@ -2,6 +2,7 @@ from django import forms
 from tempus_dominus.widgets import DatePicker
 from datetime import datetime
 from passagens.classe_viagem import tipos_de_classes
+from .validation import * # Importa todas as funções e classes do pacote validation.
 
 class PassagemForm(forms.Form):
     origem = forms.CharField(label='Origem', max_length=100)
@@ -18,18 +19,16 @@ class PassagemForm(forms.Form):
     )
     email = forms.EmailField(label='Email', max_length=150)
 
-    def clean_origem(self):
+    # O método clean faz a validação em conjunto;
+    # Já os métodos clean_[campo] validam cada campo individualmente.
+    def clean(self):
         origem = self.cleaned_data.get('origem')
-        if any(char.isdigit() for char in origem):
-            raise forms.ValidationError('Origem inválida: Não inclua números.')
-        else:
-            return origem
-
-    def clean_destino(self): # Os métodos clean_[campo] devem referenciar o próprio formulário.
-        # 2 sintaxes: cleaned_data['campo'] e cleaned_data.get('campo').
-        # A segunda sintaxe não dá erro de chave de acesso.
         destino = self.cleaned_data.get('destino')
-        if any(char.isdigit() for char in destino):
-            raise forms.ValidationError('Destino inválido: Não inclua números.')
-        else:
-            return destino
+        lista_de_erros = {}
+        campo_tem_algum_numero(origem, 'origem', lista_de_erros)
+        campo_tem_algum_numero(destino, 'destino', lista_de_erros)
+        origem_destino_iguais(origem, destino, lista_de_erros)
+        for nome_campo in lista_de_erros:
+            mensagem_erro = lista_de_erros[nome_campo]
+            self.add_error(nome_campo, mensagem_erro)
+        return self.cleaned_data
